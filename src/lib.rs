@@ -9,19 +9,9 @@ fn calc_perpendicular_distance(point: Point2d, line_start: Point2d, line_end: Po
     (ap - n * (ap * n)).abs()
 }
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn add_two_numbers_return_result() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
 
     #[test]
     fn calc_perpendicular_distance_of_point_from_line() {

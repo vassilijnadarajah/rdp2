@@ -7,7 +7,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn add_two_numbers_return_result() {
         let result = add(2, 2);
         assert_eq!(result, 4);
     }

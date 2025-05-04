@@ -1,6 +1,42 @@
 pub mod objects;
 
 use objects::Point2D;
+use pyo3::prelude::*;
+
+#[pymodule]
+fn rdp2(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    // m.add_class::<objects::Point2D>()?;
+    m.add_function(wrap_pyfunction!(rdp_wrapper, m)?)?;
+
+    Ok(())
+}
+
+#[pyfunction]
+#[pyo3(name = "rdp")]
+fn rdp_wrapper(points: Vec<Vec<f64>>, epsilon: f64) -> Option<Vec<Vec<f64>>> {
+    // Convert PyList to Vec<Point2D>
+    let mut points_vec: Vec<Point2D> = Vec::new();
+    for item in points.iter() {
+        let point: Point2D = Point2D::new(item[0], item[1]);
+        points_vec.push(point);
+    }
+
+    // Call the RDP function
+    let result = rdp(&points_vec, epsilon);
+    if result.is_none() {
+        return None;
+    }
+
+    // Convert Vec<Point2D> back to Vec<Vec<f64>>
+    let mut result_vec: Vec<Vec<f64>> = Vec::new();
+    for point in result.unwrap() {
+        let point_vec: Vec<f64> = vec![point.x, point.y];
+        result_vec.push(point_vec);
+    }
+
+    return Some(result_vec);
+}
+
 
 /// ## Ramer-Douglas-Peucker algorithm for line simplification
 /// 

@@ -5,7 +5,7 @@ edition = "2024"
 
 [lib]
 name = "rdp2"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-pyo3 = { version = "0.21", features = ["extension-module"] }
+pyo3 = { version = "0.24", features = ["extension-module"] }

@@ -1,7 +1,22 @@
-mod objects;
+pub mod objects;
 
 use objects::Point2D;
 
+/// ## Ramer-Douglas-Peucker algorithm for line simplification
+/// 
+/// This function implements the Douglas-Peucker algorithm for line simplification.
+/// It takes a vector of points and an epsilon value as input.
+/// The algorithm removes points from the line that are within the epsilon distance
+/// from the line segment formed by the endpoints.
+/// It returns a new vector of points representing the simplified line.
+/// 
+/// ### Parameters
+/// - `points`: A vector of `Point2D` representing the original line.
+/// - `epsilon`: A `f64` value representing the tolerance for point removal.
+/// 
+/// ### Returns
+/// - `Option<Vec<Point2D>>`: An `Option` containing a vector of `Point2D` representing the simplified line.
+/// If the input vector has less than 3 points, it returns `None`.
 pub fn rdp(points: &Vec<Point2D>, epsilon: f64) -> Option<Vec<Point2D>> {
     if points.len() < 3 {
         return None;
@@ -204,7 +219,7 @@ mod tests {
 
         
         // Act
-        let result = rdp(&line, 1.5);
+        let result = rdp(&line, 1.0);
         
         // Assert
         assert!(result.is_some());

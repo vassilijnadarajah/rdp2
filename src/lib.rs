@@ -1,42 +1,19 @@
 pub mod objects;
 
-use objects::Point2D;
+use objects::{Point2D, AsPoint2D};
 use pyo3::prelude::*;
 
 #[pymodule]
 fn rdp2(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    // m.add_class::<objects::Point2D>()?;
     m.add_function(wrap_pyfunction!(rdp_wrapper, m)?)?;
-
     Ok(())
 }
 
 #[pyfunction]
 #[pyo3(name = "rdp")]
-fn rdp_wrapper(points: Vec<Vec<f64>>, epsilon: f64) -> Option<Vec<Vec<f64>>> {
-    // Convert PyList to Vec<Point2D>
-    let mut points_vec: Vec<Point2D> = Vec::new();
-    for item in points.iter() {
-        let point: Point2D = Point2D::new(item[0], item[1]);
-        points_vec.push(point);
-    }
-
-    // Call the RDP function
-    let result = rdp(&points_vec, epsilon);
-    if result.is_none() {
-        return None;
-    }
-
-    // Convert Vec<Point2D> back to Vec<Vec<f64>>
-    let mut result_vec: Vec<Vec<f64>> = Vec::new();
-    for point in result.unwrap() {
-        let point_vec: Vec<f64> = vec![point.x, point.y];
-        result_vec.push(point_vec);
-    }
-
-    return Some(result_vec);
+fn rdp_wrapper(points: Vec<[f64; 2]>, epsilon: f64) -> Option<Vec<[f64; 2]>> {
+    rdp(&points, epsilon)
 }
-
 
 /// ## Ramer-Douglas-Peucker algorithm for line simplification
 /// 
@@ -53,12 +30,13 @@ fn rdp_wrapper(points: Vec<Vec<f64>>, epsilon: f64) -> Option<Vec<Vec<f64>>> {
 /// ### Returns
 /// - `Option<Vec<Point2D>>`: An `Option` containing a vector of `Point2D` representing the simplified line.
 /// If the input vector has less than 3 points, it returns `None`.
-pub fn rdp(points: &Vec<Point2D>, epsilon: f64) -> Option<Vec<Point2D>> {
+pub fn rdp<T: AsPoint2D + Copy>(points: &Vec<T>, epsilon: f64) -> Option<Vec<T>>
+{
     if points.len() < 3 {
         return None;
     }
     
-    let mut smooth_line: Vec<Point2D> = Vec::new();
+    let mut smooth_line: Vec<T> = Vec::new();
     let mask_for_point_removal: Vec<bool> = calc_rdp_mask(&points, epsilon);
     for i in 0..points.len() {
         if !mask_for_point_removal[i] {
@@ -76,7 +54,7 @@ fn calc_perpendicular_distance(point: Point2D, line_start: Point2D, line_end: Po
     (ap - n * (ap * n)).abs()
 }
 
-fn calc_rdp_mask(points: &Vec<Point2D>, epsilon: f64) -> Vec<bool>
+fn calc_rdp_mask<T: AsPoint2D + Copy>(points: &Vec<T>, epsilon: f64) -> Vec<bool>
 {
     let mut indices: Vec<(usize, usize)> = Vec::new();
     indices.push((0, points.len() - 1));
@@ -92,7 +70,11 @@ fn calc_rdp_mask(points: &Vec<Point2D>, epsilon: f64) -> Vec<bool>
                 continue;
             }
 
-            let distance: f64 = calc_perpendicular_distance(points[i], points[start_index], points[last_index]);
+            let distance: f64 = calc_perpendicular_distance(
+                points[i].to_point2d(), 
+                points[start_index].to_point2d(), 
+                points[last_index].to_point2d()
+            );
             if distance > max_distance {
                 index = i;
                 max_distance = distance;
@@ -111,6 +93,7 @@ fn calc_rdp_mask(points: &Vec<Point2D>, epsilon: f64) -> Vec<bool>
 
     return mask_for_point_removal
 }
+
 
 #[cfg(test)]
 mod tests {
@@ -132,28 +115,119 @@ mod tests {
 
     #[test]
     fn calc_rdp_for_line_of_array_points() {
-        // Arrange
-        let line: Vec<[f64; 2]> = vec![
-            [1.0,1.0],
-            [2.0,2.0],
-            [3.0,3.0],
-            [4.0,4.0],
-            [5.0,5.0],
-            [6.0,6.0],
-            [7.0,7.0],
-            [8.0,8.0],
-            [9.0,9.0],
+        let line = vec![
+            [44, 95],
+            [26, 91],
+            [22, 90],
+            [21, 90],
+            [19, 89],
+            [17, 89],
+            [15, 87],
+            [15, 86],
+            [16, 85],
+            [20, 83],
+            [26, 81],
+            [28, 80],
+            [30, 79],
+            [32, 74],
+            [32, 72],
+            [33, 71],
+            [34, 70],
+            [38, 68],
+            [43, 66],
+            [49, 64],
+            [52, 63],
+            [52, 62],
+            [53, 59],
+            [54, 57],
+            [56, 56],
+            [57, 56],
+            [58, 56],
+            [59, 56],
+            [60, 56],
+            [61, 55],
+            [61, 55],
+            [63, 55],
+            [64, 55],
+            [65, 54],
+            [67, 54],
+            [68, 54],
+            [76, 53],
+            [82, 52],
+            [84, 52],
+            [87, 51],
+            [91, 51],
+            [93, 51],
+            [95, 51],
+            [98, 50],
+            [105, 50],
+            [113, 49],
+            [120, 48],
+            [127, 48],
+            [131, 47],
+            [134, 47],
+            [137, 47],
+            [139, 47],
+            [140, 47],
+            [142, 47],
+            [145, 46],
+            [148, 46],
+            [152, 46],
+            [154, 46],
+            [155, 46],
+            [159, 46],
+            [160, 46],
+            [165, 46],
+            [168, 46],
+            [169, 45],
+            [171, 45],
+            [173, 45],
+            [176, 45],
+            [182, 45],
+            [190, 44],
+            [204, 43],
+            [204, 43],
+            [207, 43],
+            [215, 40],
+            [215, 38],
+            [215, 37],
+            [200, 37],
+            [195, 41],
+        ];
+        let expected_line = vec![
+            [44, 95],
+            [17, 89],
+            [15, 86],
+            [30, 79],
+            [32, 72],
+            [34, 70],
+            [52, 63],
+            [54, 57],
+            [56, 56],
+            [87, 51],
+            [131, 47],
+            [207, 43],
+            [215, 40],
+            [215, 37],
+            [200, 37],
+            [195, 41],
         ];
 
         // Act
-        // let smooth_line = rdp_test(line, 1.5);
+        let result = rdp(&line, 1.0);
 
         // Assert
-        // assert!(smooth_line.len() == 1);
+        assert!(result.is_some());
+        let smooth_line = result.unwrap();
+        assert!(smooth_line.len() == 16);
+        for i in 0..smooth_line.len() {
+            assert!(expected_line[i] == smooth_line[i]);
+            assert!(expected_line[i] == smooth_line[i]);
+        }
     }
 
     #[test]
-    fn calc_rdp_for_line_of_Point2D() {
+    fn calc_rdp_for_line_of_point2d() {
         // Arrange
         let line = vec![
             Point2D::new(44, 95),

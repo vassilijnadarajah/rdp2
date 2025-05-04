@@ -66,12 +66,43 @@ impl Mul<f64> for Point2D {
     }
 }
 
+pub trait AsPoint2D {
+    fn to_point2d(&self) -> Point2D;
+}
+
+impl AsPoint2D for Point2D {
+    fn to_point2d(&self) -> Point2D {
+        *self
+    }
+}
+
+impl<T: Into<f64> + Copy> AsPoint2D for Vec<T> {
+    fn to_point2d(&self) -> Point2D {
+        assert!(self.len() == 2, "Vec must have exactly two elements.");
+        Point2D::new(self[0], self[1])
+    }
+}
+
+impl<T: Into<f64> + Copy> AsPoint2D for [T; 2] {
+    fn to_point2d(&self) -> Point2D {
+        Point2D::new(self[0], self[1])
+    }
+}
+
+impl<T: Into<f64> + Copy> AsPoint2D for (T, T) {
+    fn to_point2d(&self) -> Point2D {
+        Point2D::new(self.0, self.1)
+    }
+}
+
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn calc_abs_of_Point2D_vector() {
+    fn calc_abs_of_point2d_vector() {
         let point_1: Point2D = Point2D::new(3,4);
         let point_2: Point2D = Point2D::new(0,0);
 
@@ -83,7 +114,7 @@ mod tests {
     }
 
     #[test]
-    fn calc_norm_of_Point2D_vector() {
+    fn calc_norm_of_point2d_vector() {
         let point_1: Point2D = Point2D::new(3,4);
 
         let norm_1 = point_1.norm();

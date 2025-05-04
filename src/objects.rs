@@ -1,14 +1,14 @@
 use std::ops::{Add, Sub, Mul};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Point2d {
+pub struct Point2D {
     pub x: f64,
     pub y: f64,
 }
 
-impl Point2d {
+impl Point2D {
     pub fn new<T: Into<f64>>(x: T, y: T) -> Self {
-        Point2d { x: x.into(), y: y.into() }
+        Point2D { x: x.into(), y: y.into() }
     }
 
     pub fn abs(&self) -> f64 {
@@ -17,7 +17,7 @@ impl Point2d {
 
     pub fn norm(self) -> Self {
         let magnitude: f64 = self.abs();
-        Point2d {
+        Point2D {
             x: self.x / magnitude,
             y: self.y / magnitude,
         }
@@ -25,7 +25,7 @@ impl Point2d {
 
 }
 
-impl Add for Point2d {
+impl Add for Point2D {
     type Output = Self;
 
     fn add(self, other: Self) -> Self::Output {
@@ -36,7 +36,7 @@ impl Add for Point2d {
     }
 }
 
-impl Sub for Point2d {
+impl Sub for Point2D {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self::Output {
@@ -47,7 +47,7 @@ impl Sub for Point2d {
     }
 }
 
-impl Mul for Point2d {
+impl Mul for Point2D {
     type Output = f64;
 
     fn mul(self, other: Self) -> Self::Output {
@@ -55,7 +55,7 @@ impl Mul for Point2d {
     }
 }
 
-impl Mul<f64> for Point2d {
+impl Mul<f64> for Point2D {
     type Output = Self;
 
     fn mul(self, scalar: f64) -> Self::Output {
@@ -71,9 +71,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn calc_abs_of_point2d_vector() {
-        let point_1: Point2d = Point2d::new(3,4);
-        let point_2: Point2d = Point2d::new(0,0);
+    fn calc_abs_of_Point2D_vector() {
+        let point_1: Point2D = Point2D::new(3,4);
+        let point_2: Point2D = Point2D::new(0,0);
 
         let abs_1 = point_1.abs();
         let abs_2 = point_2.abs();
@@ -83,11 +83,11 @@ mod tests {
     }
 
     #[test]
-    fn calc_norm_of_point2d_vector() {
-        let point_1: Point2d = Point2d::new(3,4);
+    fn calc_norm_of_Point2D_vector() {
+        let point_1: Point2D = Point2D::new(3,4);
 
         let norm_1 = point_1.norm();
 
-        assert_eq!(norm_1, Point2d::new(0.6, 0.8));
+        assert_eq!(norm_1, Point2D::new(0.6, 0.8));
     }
 }

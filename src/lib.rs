@@ -48,6 +48,11 @@ pub fn rdp<T: AsPoint2D + Copy>(points: &Vec<T>, epsilon: f64) -> Option<Vec<T>>
 }
 
 fn calc_perpendicular_distance(point: Point2D, line_start: Point2D, line_end: Point2D) -> f64 {
+    // Check if line points are identical
+    if line_start == line_end {
+        return (point - line_start).abs();
+    }
+
     // distance = |(a-p)-((a-p)*n)n)|
     let n: Point2D = (line_end - line_start).norm();
     let ap: Point2D = line_start - point;

@@ -22,7 +22,6 @@ impl Point2D {
             y: self.y / magnitude,
         }
     }
-
 }
 
 impl Add for Point2D {

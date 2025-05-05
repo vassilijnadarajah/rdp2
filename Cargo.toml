@@ -1,7 +1,12 @@
 [package]
 name = "rdp2"
-version = "0.1.2"
+version = "1.1.0"
 edition = "2024"
+description = "A high-performance Python library for the Ramer-Douglass-Peucker algorithm implemented in Rust "
+maintainers = [
+    {name = "Vassilij Nadarajah", email = "packages@vassilijnadarajah.de"}
+]
+license = "GPL-3.0-only"
 
 [lib]
 name = "rdp2"

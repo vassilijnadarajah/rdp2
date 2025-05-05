@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// (C) 2025 Vassilij Nadarajah
+// packages@vassilijnadarajah.de
+
 use std::ops::{Add, Sub, Mul};
 
 #[derive(Debug, Copy, Clone, PartialEq)]

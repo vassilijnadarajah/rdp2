@@ -7,12 +7,28 @@ pub mod objects;
 use objects::{Point2D, AsPoint2D};
 use pyo3::prelude::*;
 
+/// ## RDP
+/// Python modul for Ramer-Douglas-Peucker algorithm implemented in Rust
 #[pymodule]
 fn rdp2(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(rdp_wrapper, m)?)?;
     Ok(())
 }
 
+/// ## Ramer-Douglas-Peucker algorithm for line simplification
+/// 
+/// This function implements the Douglas-Peucker algorithm for line simplification.
+/// It takes a vector of points and an epsilon value as input.
+/// The algorithm removes points from the line that are within the epsilon distance
+/// from the line segment formed by the endpoints.
+/// It returns a new vector of points representing the simplified line.
+/// 
+/// ### Parameters
+/// - `points`: A list or numpy array of points representing the original line, e.g. `[[x1, y1], [x2, y2], ...]`.
+/// - `epsilon`: A number representing the tolerance for point removal, e.g. `1.0`.
+/// 
+/// ### Returns
+/// - `List[List[float]]`: A list of points representing the simplified line.
 #[pyfunction]
 #[pyo3(name = "rdp")]
 fn rdp_wrapper(points: Vec<[f64; 2]>, epsilon: f64) -> Option<Vec<[f64; 2]>> {
@@ -57,7 +73,7 @@ fn calc_perpendicular_distance(point: Point2D, line_start: Point2D, line_end: Po
         return (point - line_start).abs();
     }
 
-    // distance = |(a-p)-((a-p)*n)n)|
+    // distance = |(a-p)-((a-p)*n)n|
     let n: Point2D = (line_end - line_start).norm();
     let ap: Point2D = line_start - point;
     (ap - n * (ap * n)).abs()

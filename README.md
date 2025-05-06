@@ -1,6 +1,6 @@
 # Ramer-Douglas-Peucker Algorithm
 
-This repository contains a high-performance Python library, implemented in Rust, for the Ramer-Douglas-Peucker Algorithm.
+This repository contains a high-performance Python library, implemented in Rust, for the Ramer-Douglas-Peucker algorithm.
 
 The Ramer–Douglas–Peucker algorithm is an algorithm that decimates a curve composed of line segments to a similar curve with fewer points [[1](https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm)].
 
@@ -11,7 +11,9 @@ pip install rdp2
 ```
 
 ## Usage
-Works with both `list`s and numpy `ndarray`s. 
+Works with `list`s, `tuple`s, numpy `ndarray`s and any mixture of the three types, e.g. `list[tuple(float, float)]`. 
+
+### List
 ```py
 from rdp2 import rdp
 
@@ -19,6 +21,15 @@ rdp([[1, 1], [2, 2], [3, 3], [4, 4]], 1.0)
 # result: [[1, 1], [4, 4]]
 ```
 
+### Tuple
+```py
+from rdp2 import rdp
+
+rdp(((1, 1), (2, 2), (3, 3), (4, 4)), 1.0)
+# result: [[1, 1], [4, 4]]
+```
+
+### Numpy ndarray
 ```py
 import numpy as np
 from rdp2 import rdp

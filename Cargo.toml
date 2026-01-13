@@ -1,6 +1,6 @@
 [package]
 name = "rdp2"
-version = "1.1.2"
+version = "1.2.0"
 edition = "2024"
 description = "A high-performance Python library for the Ramer-Douglass-Peucker algorithm implemented in Rust"
 readme = "README.md"
@@ -13,4 +13,4 @@ name = "rdp2"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-pyo3 = { version = "0.24", features = ["extension-module"] }
+pyo3 = { version = ">=0.24", features = ["extension-module"] }
